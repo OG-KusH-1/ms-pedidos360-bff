@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  * - "ORDER" es palabra reservada en SQL, por eso usamos "ORDERS"
  */
 @Entity
-@Table(name = "ORDERS", schema = "PEDIDOS360")   // Esquema de Oracle (reemplazar si es distinto)
+@Table(name = "ORDERS")   // Esquema de Oracle (reemplazar si es distinto)
 @Data                                              // Lombok: genera getters, setters, equals, hashCode, toString
 @Builder
 @NoArgsConstructor
