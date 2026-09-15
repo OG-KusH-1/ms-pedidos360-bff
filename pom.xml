@@ -62,12 +62,26 @@
     <dependency>
       <groupId>com.azure.spring</groupId>
       <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
-    </dependency>    <!-- Driver Oracle Production (Incluye ojdbc11, ucp y todas las librerias de Wallet) -->
+    </dependency>    <!-- Driver Oracle y dependencias de Wallet explícitas -->
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11-production</artifactId>
-      <version>23.4.0.24.05</version>
-      <type>pom</type>
+      <artifactId>ojdbc11</artifactId>
+      <version>21.11.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>oraclepki</artifactId>
+      <version>21.11.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>osdt_core</artifactId>
+      <version>21.11.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>osdt_cert</artifactId>
+      <version>21.11.0.0</version>
     </dependency>
 
     <!-- Actuator: endpoints de health/metrics para monitoreo -->
