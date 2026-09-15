@@ -62,38 +62,12 @@
     <dependency>
       <groupId>com.azure.spring</groupId>
       <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
-    </dependency>
-
-    <!-- Driver oficial Oracle JDBC (ojdbc11 para Java 11+/21) -->
-    <!-- ojdbc11 es el driver para Oracle DB 12c+ -->
+    </dependency>    <!-- Driver Oracle Production (Incluye ojdbc11, ucp y todas las librerias de Wallet) -->
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11</artifactId>
+      <artifactId>ojdbc11-production</artifactId>
       <version>23.4.0.24.05</version>
-    </dependency>
-
-    <!-- Oracle UCP (Universal Connection Pool) - opcional pero recomendado -->
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ucp11</artifactId>
-      <version>23.4.0.24.05</version>
-    </dependency>
-
-    <!-- Librerias de seguridad de Oracle (Requeridas para la Wallet SSO) -->
-    <dependency>
-      <groupId>com.oracle.database.security</groupId>
-      <artifactId>oraclepki</artifactId>
-      <version>23.4.0.24.05</version>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle.database.security</groupId>
-      <artifactId>osdt_core</artifactId>
-      <version>23.4.0.24.05</version>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle.database.security</groupId>
-      <artifactId>osdt_cert</artifactId>
-      <version>23.4.0.24.05</version>
+      <type>pom</type>
     </dependency>
 
     <!-- Actuator: endpoints de health/metrics para monitoreo -->
