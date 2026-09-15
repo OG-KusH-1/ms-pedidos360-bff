@@ -1,4 +1,4 @@
-﻿package cl.duoc.pedidos360.bff.entity;
+package cl.duoc.pedidos360.bff.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-﻿package cl.duoc.pedidos360.bff.repository;
+package cl.duoc.pedidos360.bff.repository;
 
 import cl.duoc.pedidos360.bff.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
