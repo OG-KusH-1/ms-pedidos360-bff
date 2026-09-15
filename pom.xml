@@ -79,6 +79,23 @@
       <version>23.4.0.24.05</version>
     </dependency>
 
+    <!-- Librerias de seguridad de Oracle (Requeridas para la Wallet SSO) -->
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>oraclepki</artifactId>
+      <version>23.4.0.24.05</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>osdt_core</artifactId>
+      <version>23.4.0.24.05</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.security</groupId>
+      <artifactId>osdt_cert</artifactId>
+      <version>23.4.0.24.05</version>
+    </dependency>
+
     <!-- Actuator: endpoints de health/metrics para monitoreo -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
