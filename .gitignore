@@ -1,0 +1,61 @@
+# ===================================
+# SPRING BOOT / MAVEN .gitignore
+# Proyecto: ms-pedidos360-bff
+# ===================================
+
+# --- Maven build output ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# --- Archivos de secretos / configuracion local ---
+# NOTA: application.properties se sube al repo (contexto de evaluacion).
+# En un proyecto productivo, descomentar la linea de abajo:
+# src/main/resources/application.properties
+src/main/resources/application-local.properties
+src/main/resources/application-prod.properties
+
+# --- IDEs ---
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.launch
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.apt_generated
+.apt_generated_test/
+out/
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# --- Compilados Java ---
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.war
+*.ear
+
+# --- Logs ---
+*.log
+logs/
+spring.log
+
+# --- Sistema Operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Variables de entorno ---
+.env
+.env.*
+
+# --- Docker local overrides ---
+docker-compose.override.yml

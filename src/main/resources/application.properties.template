@@ -1,0 +1,65 @@
+﻿# ============================================================
+# application.properties.template
+# INSTRUCCIONES: Copia este archivo como "application.properties"
+# y reemplaza todos los valores entre < >.
+# El archivo application.properties NO debe subirse al repositorio.
+# ============================================================
+
+spring.application.name=ms-pedidos360-bff
+
+# --- Servidor ---
+server.port=8080
+
+# ============================================================
+# BASE DE DATOS ORACLE
+# Formato JDBC Thin: jdbc:oracle:thin:@//<HOST>:<PORT>/<SERVICE_NAME>
+# Para Oracle Autonomous (OCI): usar el TNS wallet o la URL larga
+# ============================================================
+spring.datasource.url=jdbc:oracle:thin:@//<TU_HOST_ORACLE>:1521/<TU_SERVICE_NAME>
+spring.datasource.username=<TU_USUARIO_ORACLE>
+spring.datasource.password=<TU_PASSWORD_ORACLE>
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+# Pool de conexiones (HikariCP - default en Spring Boot)
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=2
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.idle-timeout=300000
+
+# --- Hibernate / JPA ---
+# Dialecto para Oracle 12c+ (Spring Boot 3 lo autodetecta, pero mejor ser explicito)
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+spring.jpa.hibernate.ddl-auto=validate
+# validate: verifica que las tablas existan, no las crea ni modifica
+# update: actualiza el esquema (solo DEV) | create: peligroso en produccion
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+
+# ============================================================
+# AZURE ENTRA ID - OAUTH2 RESOURCE SERVER (JWT Validation)
+# El Resource Server valida FIRMA + CLAIMS del JWT recibido.
+# issuer-uri apunta al OIDC discovery document de Azure.
+# ============================================================
+spring.security.oauth2.resourceserver.jwt.issuer-uri=https://login.microsoftonline.com/0b35a36d-71da-40b9-bf0e-6f6de270b817/v2.0
+
+# --- Spring Cloud Azure AD ---
+# app-id-uri: el URI del audience del token (aud claim del JWT)
+# Debe coincidir con lo configurado en Azure > App Registration > Expose an API
+spring.cloud.azure.active-directory.enabled=true
+spring.cloud.azure.active-directory.app-id-uri=api://<TU_CLIENT_ID_DE_AZURE>
+spring.cloud.azure.active-directory.credential.client-id=<TU_CLIENT_ID_DE_AZURE>
+spring.cloud.azure.active-directory.profile.tenant-id=<TU_TENANT_ID>
+
+# ============================================================
+# ACTUATOR (Health checks - util para AWS ALB/API Gateway)
+# ============================================================
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=when-authorized
+
+# ============================================================
+# LOGGING
+# ============================================================
+logging.level.org.springframework.security=DEBUG
+logging.level.cl.duoc.pedidos360=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
