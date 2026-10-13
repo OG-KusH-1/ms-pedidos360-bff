@@ -68,7 +68,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/actuator/info").permitAll()
-                .anyRequest().authenticated()  // TODA peticion debe llevar JWT
+                .requestMatchers("/api/admin/rabbitmq/**").permitAll() // Endpoints de administración RabbitMQ
+                .anyRequest().authenticated()  // Pedidos y catálogo requieren JWT
             )
 
             // --------------------------------------------------------
