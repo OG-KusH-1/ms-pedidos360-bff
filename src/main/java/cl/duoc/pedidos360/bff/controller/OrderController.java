@@ -33,6 +33,7 @@ import java.util.Map;
 public class OrderController {
 
     private final OrderRepository orderRepository;
+    private final cl.duoc.pedidos360.bff.messaging.publisher.OrderEventPublisher orderEventPublisher;
 
     /**
      * GET /api/orders
@@ -105,5 +106,70 @@ public class OrderController {
         );
 
         return ResponseEntity.ok(userInfo);
+    }
+
+    /**
+     * POST /api/orders
+     * Crea un nuevo pedido con estado inicial CREADO.
+     */
+    @PostMapping
+    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write')")
+    public ResponseEntity<Order> createOrder(
+            @RequestBody Map<String, String> body,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String descripcion = body.getOrDefault("descripcion", "Pedido creado desde frontend");
+        String usuario = jwt != null ? jwt.getClaimAsString("preferred_username") : "anonimo";
+        log.info("[OrderController] Creando pedido: '{}' por usuario: {}", descripcion, usuario);
+
+        Order newOrder = Order.builder()
+                .descripcion(descripcion)
+                .estado("CREADO")
+                .build();
+
+        Order saved = orderRepository.save(newOrder);
+        return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(saved);
+    }
+
+    /**
+     * PATCH /api/orders/{id}/status
+     * Actualiza el estado de un pedido y dispara tareas asíncronas en RabbitMQ si pasa a ACEPTADO.
+     * Regla clave de negocio: No se puede DESPACHADO sin haber pasado por ACEPTADO.
+     */
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write')")
+    public ResponseEntity<?> updateOrderStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String nuevoEstado = body.get("estado");
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El campo 'estado' es obligatorio"));
+        }
+        nuevoEstado = nuevoEstado.toUpperCase();
+
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Validación de regla de negocio del Caso Semestral: No se puede despachar sin aceptar
+        if ("DESPACHADO".equals(nuevoEstado) && !"ACEPTADO".equals(order.getEstado()) && !"EN_PREPARACION".equals(order.getEstado())) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Regla de negocio violada: No se puede 'DESPACHAR' un pedido que no haya sido 'ACEPTADO' previamente."
+            ));
+        }
+
+        order.setEstado(nuevoEstado);
+        Order updated = orderRepository.save(order);
+        log.info("[OrderController] Pedido #{} actualizado a estado '{}'", id, nuevoEstado);
+
+        // Si el pedido es ACEPTADO, disparar la mensajería asíncrona hacia RabbitMQ
+        if ("ACEPTADO".equals(nuevoEstado)) {
+            orderEventPublisher.publishOrderAccepted(updated);
+        }
+
+        return ResponseEntity.ok(updated);
     }
 }

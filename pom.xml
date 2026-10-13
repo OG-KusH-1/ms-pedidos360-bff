@@ -90,6 +90,18 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
+    <!-- Spring Boot Starter AMQP (RabbitMQ) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Starter Validation (Hibernate Validator / Jakarta Validation) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
     <!-- Lombok: reduce boilerplate (getters, constructors, etc.) -->
     <dependency>
       <groupId>org.projectlombok</groupId>
