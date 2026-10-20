@@ -22,7 +22,7 @@ public interface RabbitAdminService {
 
     List<QueueInfoDto> listConfiguredQueues();
 
-    int purgeQueue(String queueName);
+    boolean purgeQueue(String queueName);
 
     void createExchange(CreateExchangeDto dto);
 
