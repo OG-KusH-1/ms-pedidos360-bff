@@ -5,9 +5,15 @@ import cl.duoc.pedidos360.bff.messaging.config.RabbitMQConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * RabbitAdminServiceImpl - Implementación de operaciones de infraestructura AMQP.
@@ -40,7 +46,8 @@ public class RabbitAdminServiceImpl implements RabbitAdminService {
             }
         }
 
-        Queue queue = new Queue(dto.getName(), dto.isDurable(), false, dto.isAutoDelete(), arguments);
+        org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(
+                dto.getName(), dto.isDurable(), false, dto.isAutoDelete(), arguments);
         String declaredName = amqpAdmin.declareQueue(queue);
 
         log.info("[RabbitAdmin] Cola declarada exitosamente: '{}'", declaredName);
@@ -50,7 +57,17 @@ public class RabbitAdminServiceImpl implements RabbitAdminService {
     @Override
     public boolean deleteQueue(String queueName, boolean ifUnused, boolean ifEmpty) {
         log.info("[RabbitAdmin] Eliminando cola '{}' (ifUnused: {}, ifEmpty: {})", queueName, ifUnused, ifEmpty);
-        return amqpAdmin.deleteQueue(queueName, ifUnused, ifEmpty);
+        try {
+            if (ifUnused || ifEmpty) {
+                amqpAdmin.deleteQueue(queueName, ifUnused, ifEmpty);
+                return true;
+            } else {
+                return amqpAdmin.deleteQueue(queueName);
+            }
+        } catch (Exception e) {
+            log.error("[RabbitAdmin] Error al eliminar cola {}: {}", queueName, e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -95,9 +112,15 @@ public class RabbitAdminServiceImpl implements RabbitAdminService {
     }
 
     @Override
-    public int purgeQueue(String queueName) {
+    public boolean purgeQueue(String queueName) {
         log.info("[RabbitAdmin] Purgando mensajes de la cola '{}'", queueName);
-        return amqpAdmin.purgeQueue(queueName, false);
+        try {
+            amqpAdmin.purgeQueue(queueName, false);
+            return true;
+        } catch (Exception e) {
+            log.error("[RabbitAdmin] Error purgando cola {}: {}", queueName, e.getMessage());
+            return false;
+        }
     }
 
     @Override

@@ -90,10 +90,11 @@ public class RabbitAdminController {
     @PostMapping("/queues/{name}/purge")
     public ResponseEntity<Map<String, Object>> purgeQueue(@PathVariable String name) {
         log.info("[REST] Purgando cola: {}", name);
-        int purged = rabbitAdminService.purgeQueue(name);
+        boolean purged = rabbitAdminService.purgeQueue(name);
         return ResponseEntity.ok(Map.of(
                 "queue", name,
-                "purgedMessages", purged
+                "purged", purged,
+                "message", purged ? "Cola purgada con éxito" : "No fue posible purgar la cola"
         ));
     }
 
