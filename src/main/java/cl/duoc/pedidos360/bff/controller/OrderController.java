@@ -113,7 +113,7 @@ public class OrderController {
      * Crea un nuevo pedido con estado inicial CREADO.
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write')")
+    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<Order> createOrder(
             @RequestBody Map<String, String> body,
             @AuthenticationPrincipal Jwt jwt) {
@@ -137,7 +137,7 @@ public class OrderController {
      * Regla clave de negocio: No se puede DESPACHADO sin haber pasado por ACEPTADO.
      */
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write')")
+    @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<?> updateOrderStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> body,
