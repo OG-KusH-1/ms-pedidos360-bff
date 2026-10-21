@@ -27,7 +27,7 @@ import java.util.Map;
  * BASE PATH: /api/orders
  */
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping({"/api/orders", "/api/orders/", "/orders", "/orders/", "/api/orders/api/orders"})
 @RequiredArgsConstructor  // Lombok: genera constructor con todos los campos @final
 @Slf4j                    // Lombok: inyecta logger SLF4J como 'log'
 public class OrderController {
@@ -49,7 +49,7 @@ public class OrderController {
      * @param jwt El JWT validado, inyectado automaticamente por Spring Security.
      *            Util para extraer claims (nombre usuario, tenant, etc.)
      */
-    @GetMapping
+    @GetMapping({"", "/"})
     @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<List<Order>> getAllOrders(
             @AuthenticationPrincipal Jwt jwt) {
@@ -71,7 +71,7 @@ public class OrderController {
      * Retorna un pedido especifico por su ID.
      * Requiere rol Operador O scope Access.
      */
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}", "/{id}/"})
     @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<Order> getOrderById(
             @PathVariable Long id,
@@ -112,7 +112,7 @@ public class OrderController {
      * POST /api/orders
      * Crea un nuevo pedido con estado inicial CREADO.
      */
-    @PostMapping
+    @PostMapping({"", "/"})
     @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<Order> createOrder(
             @RequestBody Map<String, String> body,
@@ -136,7 +136,7 @@ public class OrderController {
      * Actualiza el estado de un pedido y dispara tareas asíncronas en RabbitMQ si pasa a ACEPTADO.
      * Regla clave de negocio: No se puede DESPACHADO sin haber pasado por ACEPTADO.
      */
-    @PatchMapping("/{id}/status")
+    @PatchMapping({"/{id}/status", "/{id}/status/"})
     @PreAuthorize("hasAuthority('APPROLE_Operador') or hasAuthority('APPROLE_Admin') or hasAuthority('SCOPE_Write') or hasAuthority('SCOPE_Read')")
     public ResponseEntity<?> updateOrderStatus(
             @PathVariable Long id,
