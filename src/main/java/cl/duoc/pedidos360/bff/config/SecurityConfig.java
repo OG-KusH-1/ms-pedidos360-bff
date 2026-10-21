@@ -133,8 +133,8 @@ public class SecurityConfig {
             // Agrega aqui el dominio del frontend desplegado cuando este disponible:
             // "https://mi-frontend.s3-website.us-east-1.amazonaws.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Client-App", "Origin", "X-Requested-With"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
