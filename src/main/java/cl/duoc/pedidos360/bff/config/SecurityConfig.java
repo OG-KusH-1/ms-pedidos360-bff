@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/actuator/info").permitAll()
                 .requestMatchers("/api/admin/rabbitmq/**").permitAll() // Endpoints de administración RabbitMQ
+                .requestMatchers("/api/admin/kafka/**").permitAll()    // Endpoints de administración Kafka & Streaming Analytics
                 .anyRequest().authenticated()  // Pedidos y catálogo requieren JWT
             )
 

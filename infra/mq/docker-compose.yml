@@ -1,0 +1,47 @@
+version: '3.8'
+
+# ============================================================
+# CLÚSTER DE RABBITMQ (2 NODOS) - PEDIDOS360
+# Evaluación Parcial N° 2 / 3 & Defensa
+# ============================================================
+
+services:
+  rabbitmq1:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq1
+    hostname: rabbitmq1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=pedidos360_erlang_secret_cookie
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+      - RABBITMQ_NODENAME=rabbit@rabbitmq1
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    ports:
+      - "5672:5672"     # Puerto AMQP principal
+      - "15672:15672"   # Management Web UI (Nodo 1)
+    networks:
+      - pedidos360-mq-net
+
+  rabbitmq2:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq2
+    hostname: rabbitmq2
+    depends_on:
+      - rabbitmq1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=pedidos360_erlang_secret_cookie
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+      - RABBITMQ_NODENAME=rabbit@rabbitmq2
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    ports:
+      - "5673:5672"     # Puerto AMQP Nodo 2
+      - "15673:15672"   # Management Web UI (Nodo 2)
+    networks:
+      - pedidos360-mq-net
+
+networks:
+  pedidos360-mq-net:
+    driver: bridge

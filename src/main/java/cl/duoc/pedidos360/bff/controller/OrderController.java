@@ -34,6 +34,7 @@ public class OrderController {
 
     private final OrderRepository orderRepository;
     private final cl.duoc.pedidos360.bff.messaging.publisher.OrderEventPublisher orderEventPublisher;
+    private final cl.duoc.pedidos360.bff.streaming.producer.OrderKafkaProducer orderKafkaProducer;
 
     /**
      * GET /api/orders
@@ -128,6 +129,8 @@ public class OrderController {
                 .build();
 
         Order saved = orderRepository.save(newOrder);
+        orderKafkaProducer.publishOrderEvent(saved, "ORDER_CREATED", null, usuario, false);
+        orderKafkaProducer.publishAnalyticsMetric("ORDER_CREATED_METRIC", saved.getId(), "Orden #" + saved.getId(), null, 1, saved.getDescripcion());
         return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(saved);
     }
 
@@ -161,14 +164,21 @@ public class OrderController {
             ));
         }
 
+        String estadoAnterior = order.getEstado();
         order.setEstado(nuevoEstado);
         Order updated = orderRepository.save(order);
         log.info("[OrderController] Pedido #{} actualizado a estado '{}'", id, nuevoEstado);
 
-        // Si el pedido es ACEPTADO, disparar la mensajería asíncrona hacia RabbitMQ
+        // Si el pedido es ACEPTADO, disparar la mensajería asíncrona hacia RabbitMQ (comandas y factura)
         if ("ACEPTADO".equals(nuevoEstado)) {
             orderEventPublisher.publishOrderAccepted(updated);
         }
+
+        // Publicar evento de streaming en Kafka para analítica y auditoría en tiempo real
+        String usuario = jwt != null ? jwt.getClaimAsString("preferred_username") : "sistema";
+        String eventType = "ACEPTADO".equals(nuevoEstado) ? "ORDER_ACCEPTED" : "ORDER_STATUS_CHANGED";
+        orderKafkaProducer.publishOrderEvent(updated, eventType, estadoAnterior, usuario, false);
+        orderKafkaProducer.publishAnalyticsMetric(eventType + "_METRIC", updated.getId(), "Orden #" + updated.getId(), null, 1, "Estado: " + estadoAnterior + " -> " + nuevoEstado);
 
         return ResponseEntity.ok(updated);
     }

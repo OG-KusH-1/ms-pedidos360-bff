@@ -1,0 +1,26 @@
+version: '3.8'
+
+# ============================================================
+# KAFKA-UI - ADMINISTRACIÓN DE BROKERS, TÓPICOS Y CONSUMER GROUPS
+# Puerto Host: 8090 (para no colisionar con BFF en puerto 8080)
+# ============================================================
+
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    hostname: kafka-ui
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: pedidos360-kafka-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29093
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      DYNAMIC_CONFIG_ENABLED: "true"
+    networks:
+      - pedidos360-kafka-net
+
+networks:
+  pedidos360-kafka-net:
+    name: pedidos360-kafka-net
+    external: true

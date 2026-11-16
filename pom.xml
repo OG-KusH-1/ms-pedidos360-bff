@@ -96,6 +96,12 @@
       <artifactId>spring-boot-starter-amqp</artifactId>
     </dependency>
 
+    <!-- Spring for Apache Kafka (Streaming & Analítica) -->
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+    </dependency>
+
     <!-- Spring Boot Starter Validation (Hibernate Validator / Jakarta Validation) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
